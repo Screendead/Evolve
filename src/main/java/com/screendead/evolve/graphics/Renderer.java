@@ -7,12 +7,13 @@ import org.lwjgl.stb.STBPerlin;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT;
 
 public class Renderer {
     private Shader shader;
     private Mesh world;
-    private Matrix4f view = new Matrix4f();
-    private float fov = 100.0f;
+    private Matrix4f view = new Matrix4f().identity(), transform = new Matrix4f().identity();
+    private float fov = 90.0f;
 
     /**
      * Render to the framebuffer
@@ -20,6 +21,7 @@ public class Renderer {
     public void render(Camera camera) {
         // Clear the framebuffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 //        glColor4f(255.0f, 255.0f, 255.0f, 0.5f);
 //        glBegin(GL_TRIANGLE_STRIP);
@@ -49,6 +51,7 @@ public class Renderer {
         GL.createCapabilities();
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEBUG_OUTPUT);
 //        glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glEnable(GL_MULTISAMPLE);
@@ -57,77 +60,81 @@ public class Renderer {
 //        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-//        {
-//            int size = 100;
-//            float scale = 1.0f;
-//            float detail = 100.0f;
-//
-//            float[] v, n, c;
-//            int[] i;
-//
-//            v = new float[3 * size * size];
-//            n = new float[3 * size * size];
-//            c = new float[4 * size * size];
-//            i = new int[6 * size * size];
-//
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    v[z * 3 * size + x]     = x * scale;
-//                    v[z * 3 * size + x + 1] = STBPerlin.stb_perlin_noise3(x / detail, 0.0f, z / detail, 0, 0, 0) * scale;
-//                    v[z * 3 * size + x + 2] = z * scale;
-//                }
-//            }
-//
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    n[z * 3 * size + x]     = 0.0f;
-//                    n[z * 3 * size + x + 1] = 0.0f;
-//                    n[z * 3 * size + x + 2] = 0.0f;
-//                }
-//            }
-//
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    c[z * 4 * size + x]     = 255.0f;
-//                    c[z * 4 * size + x + 1] = 255.0f;
-//                    c[z * 4 * size + x + 2] = 255.0f;
-//                    c[z * 4 * size + x + 3] = 1.0f;
-//                }
-//            }
-//
-//            for (int z = 0; z < size - 1; z++) {
-//                for (int x = 0; x < size - 1; x++) {
-//                    i[z * 6 * size + x] = z * size + x;
-//                    i[z * 6 * size + x + 1] = (z + 1) * size + x;
-//                    i[z * 6 * size + x + 2] = z * size + x + 1;
-//
-//                    i[z * 6 * size + x + 3] = z * size + x + 1;
-//                    i[z * 6 * size + x + 4] = (z + 1) * size + x;
-//                    i[z * 6 * size + x + 5] = (z + 1) * size + x + 1;
-//                }
-//            }
-//
-//            world = new Mesh(v, n, c, i);
-//        }
+        {
+            int size = 100;
+            float scale = 1.0f;
+            float height = 0.02f;
+            float detail = 0.05f;
 
-        world = new Mesh(new float[] {
-                0.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 1.0f,
-        }, new float[] {
-                0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f,
-        }, new float[] {
-                0.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 0.0f, 1.0f,
-        }, new int[] {
-                0, 1, 2, 2, 1, 3,
-        });
+            float[] v, n, c;
+            int[] i;
+
+            v = new float[3 * size * size];
+            n = new float[3 * size * size];
+            c = new float[4 * size * size];
+            i = new int[6 * size * size];
+
+            for (int z = 0; z < size; z++) {
+                for (int x = 0; x < size; x++) {
+                    v[(z * size + x) * 3]     = x * scale;
+                    v[(z * size + x) * 3 + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * size * height;
+                    v[(z * size + x) * 3 + 2] = z * scale;
+                }
+            }
+
+            for (int z = 0; z < size; z++) {
+                for (int x = 0; x < size; x++) {
+                    n[(z * size + x) * 3]     = 0.0f;
+                    n[(z * size + x) * 3 + 1] = 1.0f;
+                    n[(z * size + x) * 3 + 2] = 0.0f;
+                }
+            }
+
+            for (int z = 0; z < size; z++) {
+                for (int x = 0; x < size; x++) {
+                    c[(z * size + x) * 4]     = v[(z * size + x) * 3 + 1];
+                    c[(z * size + x) * 4 + 1] = 1 - v[(z * size + x) * 3 + 1];
+                    c[(z * size + x) * 4 + 2] = 255;
+                    c[(z * size + x) * 4 + 3] = 1.0f;
+                }
+            }
+
+            for (int z = 0; z < size - 1; z++) {
+                for (int x = 0; x < size - 1; x++) {
+                    i[(z * size + x) * 6] = z * size + x;
+                    i[(z * size + x) * 6 + 1] = (z + 1) * size + x;
+                    i[(z * size + x) * 6 + 2] = z * size + x + 1;
+
+                    i[(z * size + x) * 6 + 3] = z * size + x + 1;
+                    i[(z * size + x) * 6 + 4] = (z + 1) * size + x;
+                    i[(z * size + x) * 6 + 5] = (z + 1) * size + x + 1;
+                }
+            }
+//            i = new int[] {
+//                    0, 1, 2, 2, 1, 3,
+//            };
+
+            world = new Mesh(v, n, c, i);
+        }
+
+//        world = new Mesh(new float[] {
+//                0.0f, 0.0f, 0.0f,
+//                1.0f, 0.0f, 0.0f,
+//                0.0f, 0.0f, 1.0f,
+//                1.0f, 0.0f, 1.0f,
+//        }, new float[] {
+//                0.0f, 1.0f, 0.0f,
+//                0.0f, 1.0f, 0.0f,
+//                0.0f, 1.0f, 0.0f,
+//                0.0f, 1.0f, 0.0f,
+//        }, new float[] {
+//                0.0f, 0.0f, 0.0f, 1.0f,
+//                0.0f, 0.0f, 0.0f, 1.0f,
+//                0.0f, 0.0f, 0.0f, 1.0f,
+//                0.0f, 0.0f, 0.0f, 1.0f,
+//        }, new int[] {
+//                0, 1, 2, 2, 1, 3,
+//        });
 
         // Create texture and shader
         shader = new Shader("basic");
@@ -175,7 +182,7 @@ public class Renderer {
      */
     public void setTransform(float dx, float dy, float dz, float rx, float ry, float rz, float sx, float sy, float sz) {
         shader.bind();
-            shader.setUniform("transform", new Matrix4f().translation(dx, dy, dz)
+            shader.setUniform("transform", transform = new Matrix4f().translation(dx, dy, dz)
                     .rotateYXZ((float) Math.toRadians(ry), (float) Math.toRadians(rx), (float) Math.toRadians(rz))
                     .scale(sx, sy, sz));
         Shader.unbind();
