@@ -2,6 +2,7 @@ package com.screendead.evolve.graphics;
 
 import com.screendead.evolve.data.Mesh;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.stb.STBPerlin;
 
@@ -61,10 +62,10 @@ public class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         {
-            int size = 100;
-            float scale = 1.0f;
-            float height = 0.02f;
-            float detail = 0.05f;
+            int size = 1024;
+            float scale = 0.1f;
+            float height = 0.01f;
+            float detail = 0.005f;
 
             float[] v, n, c;
             int[] i;
@@ -74,6 +75,7 @@ public class Renderer {
             c = new float[4 * size * size];
             i = new int[6 * size * size];
 
+            // Vertices
             for (int z = 0; z < size; z++) {
                 for (int x = 0; x < size; x++) {
                     v[(z * size + x) * 3]     = x * scale;
@@ -82,23 +84,22 @@ public class Renderer {
                 }
             }
 
-            for (int z = 0; z < size; z++) {
-                for (int x = 0; x < size; x++) {
-                    n[(z * size + x) * 3]     = 0.0f;
-                    n[(z * size + x) * 3 + 1] = 1.0f;
-                    n[(z * size + x) * 3 + 2] = 0.0f;
-                }
+            // Normals
+            for (int a = 0; a < v.length; a++) {
+                n[a] = 0.0f;
             }
 
+            // Colors
             for (int z = 0; z < size; z++) {
                 for (int x = 0; x < size; x++) {
-                    c[(z * size + x) * 4]     = v[(z * size + x) * 3 + 1];
-                    c[(z * size + x) * 4 + 1] = 1 - v[(z * size + x) * 3 + 1];
-                    c[(z * size + x) * 4 + 2] = 255;
+                    c[(z * size + x) * 4] = 0.0f;
+                    c[(z * size + x) * 4 + 1] = 0.0f;
+                    c[(z * size + x) * 4 + 2] = 255.0f;
                     c[(z * size + x) * 4 + 3] = 1.0f;
                 }
             }
 
+            // Indices
             for (int z = 0; z < size - 1; z++) {
                 for (int x = 0; x < size - 1; x++) {
                     i[(z * size + x) * 6] = z * size + x;
@@ -110,9 +111,20 @@ public class Renderer {
                     i[(z * size + x) * 6 + 5] = (z + 1) * size + x + 1;
                 }
             }
-//            i = new int[] {
-//                    0, 1, 2, 2, 1, 3,
-//            };
+
+            // Normals
+//            for (int a = 0; a < size * size; a++) {
+//                Vector3f P1 = new Vector3f(v[i[a * 6]], v[i[a * 6] + 1], v[i[a * 6] + 2]);
+//                Vector3f P2 = new Vector3f(v[i[a * 6]], v[i[a * 6]], v[i[a * 6]]);
+//                Vector3f P3 = new Vector3f();
+//
+//                Vector3f V = P1.sub(P2);
+//                Vector3f W = P1.sub(P3);
+//
+//                n[a * 3]     = normal.x;
+//                n[a * 3 + 1] = normal.y;
+//                n[a * 3 + 2] = normal.z;
+//            }
 
             world = new Mesh(v, n, c, i);
         }
@@ -143,8 +155,8 @@ public class Renderer {
         shader.addUniform("camera");
 
         // Set the clear color
-        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
-//        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     /**
