@@ -81,9 +81,15 @@ public class Window {
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(handle);
-        renderer.init();
 
-        camera = new Camera(new Vector3f(128.0f, 16.0f, 128.0f), new Vector3f(0.0f, 0.0f, -1.0f));
+        int msize = 512;
+        float mscale = 0.1f;
+        float mheight = 24.0f;
+        float mdetail = 0.01f;
+
+        renderer.init(msize, mscale, mheight, mdetail);
+
+        camera = new Camera(new Vector3f(msize * mscale / 2.0f, mscale * mheight, msize * mscale / 2.0f));
 
         this.autoViewport();
 

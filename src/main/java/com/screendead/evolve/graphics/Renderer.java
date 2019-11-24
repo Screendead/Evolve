@@ -43,7 +43,7 @@ public class Renderer {
     /**
      * Initialise OpenGL context for use with this window
      */
-    public void init() {
+    public void init(int size, float scale, float height, float detail) {
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -62,92 +62,92 @@ public class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         {
-            int size = 256;
-            float scale = 1.0f;
-            float height = 0.05f;
-            float detail = 0.05f;
 
             float[] v, n, c;
             int  [] i;
 
 //            v = new float[3 * size * size];
-            v = new float[6 * 3 * size * size];
+            v = new float[3 * size * size];
             n = new float[3 * size * size];
             c = new float[4 * size * size];
             i = new int  [6 * size * size];
 
-//            // Vertices
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    v[(z * size + x) * 3 + 0]     = x * scale;
-//                    v[(z * size + x) * 3 + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * size * height;
-//                    v[(z * size + x) * 3 + 2] = z * scale;
-//                }
-//            }
-
-
             // Vertices
-            for (int a = 0; a < size * size * 6 * 3; a += 6 * 3) {
-                int x = (a / (6 * 3)) % size;
-                int z = (a / (6 * 3)) / size;
+            for (int z = 0; z < size; z++) {
+                for (int x = 0; x < size; x++) {
+                    v[(z * size + x) * 3 + 0] = x * scale;
+                    v[(z * size + x) * 3 + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * height * scale;
+                    v[(z * size + x) * 3 + 2] = z * scale;
 
-                // Triangle 1
-                v[a + 0] = x * scale;
-                v[a + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
-                v[a + 2] = z * scale;
-
-                v[a + 3] = x * scale;
-                v[a + 4] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
-                v[a + 5] = (z + 1) * scale;
-
-                v[a + 6] = (x + 1) * scale;
-                v[a + 7] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
-                v[a + 8] = z * scale;
-
-                // Triangle 2
-                v[a + 9] = (x + 1) * scale;
-                v[a + 10] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
-                v[a + 11] = z * scale;
-
-                v[a + 12] = x * scale;
-                v[a + 13] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
-                v[a + 14] = (z + 1) * scale;
-
-                v[a + 15] = (x + 1) * scale;
-                v[a + 16] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
-                v[a + 17] = (z + 1) * scale;
+                    n[(z * size + x) * 3 + 0] = 0.0f;
+                    n[(z * size + x) * 3 + 1] = 1.0f;
+                    n[(z * size + x) * 3 + 2] = 0.0f;
+                }
             }
+
+
+//            // Vertices
+//            for (int a = 0; a < size * size * 6 * 3; a += 6 * 3) {
+//                int x = (a / (6 * 3)) % size;
+//                int z = (a / (6 * 3)) / size;
+//
+//                // Triangle 1
+//                v[a + 0] = x * scale;
+//                v[a + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 2] = z * scale;
+//
+//                v[a + 3] = x * scale;
+//                v[a + 4] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 5] = (z + 1) * scale;
+//
+//                v[a + 6] = (x + 1) * scale;
+//                v[a + 7] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 8] = z * scale;
+//
+//                // Triangle 2
+//                v[a + 9] = (x + 1) * scale;
+//                v[a + 10] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, z * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 11] = z * scale;
+//
+//                v[a + 12] = x * scale;
+//                v[a + 13] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 14] = (z + 1) * scale;
+//
+//                v[a + 15] = (x + 1) * scale;
+//                v[a + 16] = STBPerlin.stb_perlin_noise3((x + 1) * detail, 0.0f, (z + 1) * detail, 0, 0, 0) * size * height * scale;
+//                v[a + 17] = (z + 1) * scale;
+//            }
 
             // Colors
             for (int z = 0; z < size; z++) {
                 for (int x = 0; x < size; x++) {
-                    c[(z * size + x) * 4 + 0] = 1.0f;
-                    c[(z * size + x) * 4 + 1] = 1.0f;
-                    c[(z * size + x) * 4 + 2] = 1.0f;
-                    c[(z * size + x) * 4 + 3] = 0.5f;
+                    c[(z * size + x) * 4 + 0] = STBPerlin.stb_perlin_noise3(x * detail, 32.0f, z * detail, 0, 0, 0);
+                    c[(z * size + x) * 4 + 1] = STBPerlin.stb_perlin_noise3(x * detail * 2, 64.0f, z * detail * 2, 0, 0, 0);
+                    c[(z * size + x) * 4 + 2] = STBPerlin.stb_perlin_noise3(x * detail * 4, 128.0f, z * detail * 4, 0, 0, 0);
+                    c[(z * size + x) * 4 + 3] = 1.0f;
+                }
+            }
+
+            // Indices
+            for (int z = 0; z < size - 1; z++) {
+                for (int x = 0; x < size - 1; x++) {
+                    int index = (z * size + x) * 6;
+
+                    i[index + 0] = z * size + x;
+                    i[index + 1] = (z + 1) * size + x;
+                    i[index + 2] = z * size + x + 1;
+
+                    i[index + 3] = z * size + x + 1;
+                    i[index + 4] = (z + 1) * size + x;
+                    i[index + 5] = (z + 1) * size + x + 1;
+
                 }
             }
 
 //            // Indices
-//            for (int z = 0; z < size - 1; z++) {
-//                for (int x = 0; x < size - 1; x++) {
-//                    int index = (z * size + x) * 6;
-//
-//                    i[index + 0] = z * size + x;
-//                    i[index + 1] = (z + 1) * size + x;
-//                    i[index + 2] = z * size + x + 1;
-//
-//                    i[index + 3] = z * size + x + 1;
-//                    i[index + 4] = (z + 1) * size + x;
-//                    i[index + 5] = (z + 1) * size + x + 1;
-//
-//                }
+//            for (int a = 0; a < size * size * 6; a++) {
+//                i[a] = a;
 //            }
-
-            // Indices
-            for (int a = 0; a < size * size * 6; a++) {
-                i[a] = a;
-            }
 
 //            // Normals
 //            for (int a = 0; a < size * size; a++) {
