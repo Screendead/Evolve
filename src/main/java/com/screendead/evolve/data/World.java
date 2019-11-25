@@ -130,37 +130,38 @@ public class World {
         // Colors
         for (int z = 0; z < size; z++) {
             for (int x = 0; x < size; x++) {
-                int index = (x + size * z) * 24;
+                int cindex = (x + size * z) * 24;
+                int vindex = (x + size * z) * 18;
 
-                c[index     ] = 1.0f;
-                c[index +  1] = 1.0f;
-                c[index +  2] = 1.0f;
-                c[index +  3] = 1.0f;
+                c[cindex     ] = color(0, n[vindex +  0]);
+                c[cindex +  1] = color(1, n[vindex +  1]);
+                c[cindex +  2] = color(2, n[vindex +  2]);
+                c[cindex +  3] = 1.0f;
 
-                c[index +  4] = 1.0f;
-                c[index +  5] = 1.0f;
-                c[index +  6] = 1.0f;
-                c[index +  7] = 1.0f;
+                c[cindex +  4] = color(0, n[vindex +  3]);
+                c[cindex +  5] = color(1, n[vindex +  4]);
+                c[cindex +  6] = color(2, n[vindex +  5]);
+                c[cindex +  7] = 1.0f;
 
-                c[index +  8] = 1.0f;
-                c[index +  9] = 1.0f;
-                c[index + 10] = 1.0f;
-                c[index + 11] = 1.0f;
+                c[cindex +  8] = color(0, n[vindex +  6]);
+                c[cindex +  9] = color(1, n[vindex +  7]);
+                c[cindex + 10] = color(2, n[vindex +  8]);
+                c[cindex + 11] = 1.0f;
 
-                c[index + 12] = 1.0f;
-                c[index + 13] = 1.0f;
-                c[index + 14] = 1.0f;
-                c[index + 15] = 1.0f;
+                c[cindex + 12] = color(0, n[vindex +  9]);
+                c[cindex + 13] = color(1, n[vindex + 10]);
+                c[cindex + 14] = color(2, n[vindex + 11]);
+                c[cindex + 15] = 1.0f;
 
-                c[index + 16] = 1.0f;
-                c[index + 17] = 1.0f;
-                c[index + 18] = 1.0f;
-                c[index + 19] = 1.0f;
+                c[cindex + 16] = color(0, n[vindex + 12]);
+                c[cindex + 17] = color(1, n[vindex + 13]);
+                c[cindex + 18] = color(2, n[vindex + 14]);
+                c[cindex + 19] = 1.0f;
 
-                c[index + 20] = 1.0f;
-                c[index + 21] = 1.0f;
-                c[index + 22] = 1.0f;
-                c[index + 23] = 1.0f;
+                c[cindex + 20] = color(0, n[vindex + 15]);
+                c[cindex + 21] = color(1, n[vindex + 16]);
+                c[cindex + 22] = color(2, n[vindex + 17]);
+                c[cindex + 23] = 1.0f;
             }
         }
 
@@ -174,6 +175,23 @@ public class World {
 
     private static float noise(float x, float z) {
         return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3);
+    }
+
+    private static float color(int value, float height) {
+        float color = noise(height, value * 24);
+
+//        switch (value) {
+//            case 0:
+//                color = (float)((byte)height ^ 0b01010101);
+//                break;
+//            case 1:
+//                color = (float)((byte)height & 0b10101010);
+//                break;
+//            case 2:
+//                color = noise(height, value * 24);
+//        }
+
+        return color;
     }
 
     public void render() {

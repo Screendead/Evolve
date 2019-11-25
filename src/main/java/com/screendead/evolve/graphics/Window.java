@@ -83,7 +83,7 @@ public class Window {
         glfwMakeContextCurrent(handle);
 
         int msize = 256;
-        float mscale = 1.0f / 4.0f;
+        float mscale = 1.0f;
         float mheight = 8.0f;
         float mdetail = 1.0f / 16.0f;
 
