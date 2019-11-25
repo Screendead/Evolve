@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: [windows,macos,linux,x64]
+    runs-on: [windows-latest,macOS-latest,ubuntu-latest,x64]
 
     steps:
     - uses: actions/checkout@v1
