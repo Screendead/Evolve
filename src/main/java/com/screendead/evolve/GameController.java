@@ -5,14 +5,14 @@ import com.screendead.evolve.graphics.Window;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
-public class GameController {
-    private Window window;
+class GameController {
+    private final Window window;
 
-    public GameController() {
+    GameController() {
         window = new Window("EVOLVE", 800, 600, true, true);
     }
 
-    public void start() {
+    void start() {
         long initialTime = System.nanoTime();
         final float timeU = 1000000000.0f / 60.0f;
         final float timeF = 1000000000.0f / 60.0f;
@@ -49,11 +49,9 @@ public class GameController {
         }
     }
 
-    public void pause() {
+    // TODO: Add pause functionality here
 
-    }
-
-    public void stop() {
+    void stop() {
         window.destroy();
     }
 }

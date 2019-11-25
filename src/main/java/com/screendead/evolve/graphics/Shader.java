@@ -13,21 +13,20 @@ import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL20.*;
 
-public class Shader {
-    private int program;
-    private int vert;
-    private int frag;
+@SuppressWarnings("unused")
+class Shader {
+    private final int program;
 
-    private HashMap<String, Integer> uniforms;
+    private final HashMap<String, Integer> uniforms;
 
-    Shader(String filename) {
+    Shader(@SuppressWarnings("SameParameterValue") String filename) {
         uniforms = new HashMap<>();
 
         // Create the shader program on the graphics card
         program = glCreateProgram();
 
         // Allocate the vertex shader
-        vert = glCreateShader(GL_VERTEX_SHADER);
+        int vert = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vert, readFile(filename + ".vert"));
         glCompileShader(vert);
 
@@ -35,7 +34,7 @@ public class Shader {
         if (glGetShaderi(vert, GL_COMPILE_STATUS) != 1) throw new RuntimeException(glGetShaderInfoLog(vert));
 
         // Allocate the fragment shader
-        frag = glCreateShader(GL_FRAGMENT_SHADER);
+        int frag = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(frag, readFile(filename + ".frag"));
         glCompileShader(frag);
 

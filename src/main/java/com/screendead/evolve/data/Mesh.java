@@ -3,18 +3,15 @@ package com.screendead.evolve.data;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh {
+class Mesh {
     private static ArrayList<Integer> vboList = new ArrayList<>();
     private final int vao, vertexCount;
 
-    public Mesh(float[] vertices, float[] normals, float[] colors, int[] indices) {
+    Mesh(float[] vertices, float[] normals, float[] colors, int[] indices) {
         FloatBuffer vertBuffer = null, normsBuffer = null, colorBuffer = null;
 //        IntBuffer indicesBuffer = null;
         try {
@@ -76,7 +73,7 @@ public class Mesh {
     /**
      * Render this mesh to the framebuffer
      */
-    public void render() {
+    void render() {
         // Draw the mesh
         glBindVertexArray(vao);
 //        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboList.get(3));
@@ -98,7 +95,7 @@ public class Mesh {
     /**
      * Clean the memory after removal
      */
-    public void cleanup() {
+    void cleanup() {
         glDisableVertexAttribArray(0);
 
         // Delete the VBOs
@@ -112,17 +109,4 @@ public class Mesh {
         glDeleteVertexArrays(vao);
     }
 
-    /**
-     * @return vao The vertex array object
-     */
-    public int getVAO() {
-        return vao;
-    }
-
-    /**
-     * @return vertexCount The number of vertices in the mesh
-     */
-    public int getVertexCount() {
-        return vertexCount;
-    }
 }

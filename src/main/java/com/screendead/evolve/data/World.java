@@ -2,10 +2,10 @@ package com.screendead.evolve.data;
 
 import org.joml.Vector3f;
 
-import static org.lwjgl.stb.STBPerlin.*;
+import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class World {
-    private Mesh mesh;
+    private final Mesh mesh;
 
     public World(int size, float scale, float height, float detail) {
         float[] v, n, c;
@@ -133,7 +133,7 @@ public class World {
                 int cindex = (x + size * z) * 24;
                 int vindex = (x + size * z) * 18;
 
-                c[cindex     ] = color(0, n[vindex +  0]);
+                c[cindex] = color(0, n[vindex]);
                 c[cindex +  1] = color(1, n[vindex +  1]);
                 c[cindex +  2] = color(2, n[vindex +  2]);
                 c[cindex +  3] = 1.0f;
@@ -178,20 +178,7 @@ public class World {
     }
 
     private static float color(int value, float height) {
-        float color = noise(height, value * 24);
-
-//        switch (value) {
-//            case 0:
-//                color = (float)((byte)height ^ 0b01010101);
-//                break;
-//            case 1:
-//                color = (float)((byte)height & 0b10101010);
-//                break;
-//            case 2:
-//                color = noise(height, value * 24);
-//        }
-
-        return color;
+        return noise(value * 24, height * 0.1f);
     }
 
     public void render() {

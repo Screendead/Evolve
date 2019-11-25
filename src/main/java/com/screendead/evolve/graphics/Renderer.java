@@ -1,26 +1,21 @@
 package com.screendead.evolve.graphics;
 
-import com.screendead.evolve.data.Mesh;
 import com.screendead.evolve.data.World;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.stb.STBPerlin;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT;
 
-public class Renderer {
+class Renderer {
     private Shader shader;
     private World world;
-    private Matrix4f view = new Matrix4f().identity(), transform = new Matrix4f().identity();
-    private float fov = 90.0f;
 
     /**
      * Render to the framebuffer
      */
-    public void render(Camera camera) {
+    void render(Camera camera) {
         // Clear the framebuffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -44,7 +39,7 @@ public class Renderer {
     /**
      * Initialise OpenGL context for use with this window
      */
-    public void init(int size, float scale, float height, float detail) {
+    void init(int size, float scale, float height, float detail) {
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -151,12 +146,13 @@ public class Renderer {
      * @param width The window width
      * @param height The window height
      */
-    public void setViewport(float width, float height) {
+    void setViewport(float width, float height) {
         // Set the viewport
         glViewport(0, 0, (int) width, (int) height);
 
         // Set the viewMatrix
-        view = new Matrix4f();
+        Matrix4f view = new Matrix4f();
+        float fov = 90.0f;
         view.perspective((float) Math.toRadians(fov),
                 width / height, 0.01f, 65536.0f);
 
@@ -179,15 +175,15 @@ public class Renderer {
      * @param sy Y component of the scale
      * @param sz Z component of the scale
      */
-    public void setTransform(float dx, float dy, float dz, float rx, float ry, float rz, float sx, float sy, float sz) {
+    void setTransform(float dx, float dy, float dz, float rx, float ry, float rz, float sx, float sy, float sz) {
         shader.bind();
-            shader.setUniform("transform", transform = new Matrix4f().translation(dx, dy, dz)
+        shader.setUniform("transform", new Matrix4f().translation(dx, dy, dz)
                     .rotateYXZ((float) Math.toRadians(ry), (float) Math.toRadians(rx), (float) Math.toRadians(rz))
                     .scale(sx, sy, sz));
         Shader.unbind();
     }
 
-    public void cleanup() {
+    void cleanup() {
         world.cleanup();
     }
 }

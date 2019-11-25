@@ -6,11 +6,14 @@ import org.lwjgl.glfw.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@SuppressWarnings("ALL")
 public class Input {
-    public boolean[] keys = new boolean[68836];
-    public boolean[] mods = new boolean[68836];
-
-    public float x, y, dx, dy;
+    public final boolean[] keys = new boolean[68836];
+    private final boolean[] mods = new boolean[68836];
+    private final Window window;
+    public float dx;
+    public float dy;
+    private float x;
 
     private GLFWWindowSizeCallback windowSizeCallback;
     private GLFWCursorPosCallback cursorPosCallback;
@@ -18,8 +21,7 @@ public class Input {
     private GLFWMouseButtonCallback mouseButtonCallback;
     private GLFWScrollCallback scrollCallback;
     private GLFWWindowFocusCallback windowFocusCallback;
-
-    private Window window;
+    private float y;
 
     public Input(Window window) {
         this.window = window;

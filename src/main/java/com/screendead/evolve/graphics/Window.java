@@ -1,7 +1,7 @@
 package com.screendead.evolve.graphics;
 
-import com.screendead.evolve.Input;
 import com.screendead.evolve.Evolve;
+import com.screendead.evolve.Input;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -27,8 +27,8 @@ public class Window {
     private Renderer renderer;
     private long monitor;
     private GLFWVidMode v;
-    private int vsync;
-    public Camera camera;
+    private final int vsync;
+    private Camera camera;
 
     public Window(String title, int width, int height, boolean isFullscreen, boolean vsyncEnabled) {
         vsync = (vsyncEnabled) ? 1 : 0;
@@ -47,6 +47,7 @@ public class Window {
         initialWidth = width;
         initialHeight = height;
 
+        //noinspection ConstantConditions
         if (fullscreen) {
             this.width = v.width();
             this.height = v.height();
@@ -248,7 +249,7 @@ public class Window {
      * Set the icon of the window
      * @param source The image to use as icon
      */
-    private void setIcon(String source) {
+    private void setIcon(@SuppressWarnings("SameParameterValue") String source) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = BufferUtils.createIntBuffer(1),
                     h = BufferUtils.createIntBuffer(1),

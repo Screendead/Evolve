@@ -3,22 +3,22 @@ package com.screendead.evolve.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Camera {
-    public Vector3f up = new Vector3f(0, 1, 0);
-    public Vector3f look, right = new Vector3f();
-    Vector3f pos, vel, acc;
-    public float horizontal = 0, vertical = 0;
+class Camera {
+    private final Vector3f up = new Vector3f(0, 1, 0);
+    private final Vector3f right = new Vector3f();
+    private final Vector3f pos;
+    private final Vector3f vel;
+    private final Vector3f acc;
+    private Vector3f look;
+    private float horizontal = 0;
+    private float vertical = 0;
     private Matrix4f lookMatrix;
 
-    public Camera() {
-        this(new Vector3f(0, 1, 0));
-    }
-
-    public Camera(Vector3f pos) {
+    Camera(Vector3f pos) {
         this(pos, new Vector3f(0, 0, 1));
     }
 
-    public Camera(Vector3f pos, Vector3f look) {
+    private Camera(Vector3f pos, Vector3f look) {
         this.pos = pos;
         this.vel = new Vector3f();
         this.acc = new Vector3f();
@@ -31,12 +31,12 @@ public class Camera {
         update(0, 0);
     }
 
-    public void update(float dx, float dy) {
+    void update(float dx, float dy) {
         horizontal += -dx / 12.0f;
         vertical += (dy * 2) / 12.0f;
 
         horizontal = horizontal % 360.0f;
-        vertical = constrain(vertical, -89.99f, 89.99f);
+        vertical = constrain(vertical);
 
         this.look = new Vector3f(0, 0, 1).rotateAxis((float) Math.toRadians(horizontal), up.x, up.y, up.z);
 
@@ -53,25 +53,17 @@ public class Camera {
         lookMatrix = new Matrix4f().lookAt(this.pos, this.pos.add(this.look, new Vector3f()), this.up);
     }
 
-    public void move(int walk, int fly, int strafe) {
+    void move(int walk, int fly, int strafe) {
         acc.add(new Vector3f(look.x, 0, look.z).normalize().mul((float) walk / 30.0f));
         acc.add(new Vector3f(right.x, right.y, right.z).normalize().mul((float) strafe / 30.0f));
         acc.add(new Vector3f(up.x, up.y, up.z).normalize().mul((float) fly / 30.0f));
     }
 
-    public Vector3f getPos() {
-        return pos;
+    private float constrain(float f) {
+        return Math.min(Math.max(f, (float) -89.99), (float) 89.99);
     }
 
-    public Vector3f getLook() {
-        return look;
-    }
-
-    private float constrain(float f, float min, float max) {
-        return Math.min(Math.max(f, min), max);
-    }
-
-    public Matrix4f getMatrix() {
+    Matrix4f getMatrix() {
         return lookMatrix;
     }
 }
