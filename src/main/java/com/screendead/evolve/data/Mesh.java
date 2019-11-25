@@ -14,9 +14,9 @@ public class Mesh {
     private static ArrayList<Integer> vboList = new ArrayList<>();
     private final int vao, vertexCount;
 
-    public Mesh(float[] positions, float[] normals, float[] colors, int[] indices) {
+    public Mesh(float[] vertices, float[] normals, float[] colors, int[] indices) {
         FloatBuffer vertBuffer = null, normsBuffer = null, colorBuffer = null;
-        IntBuffer indicesBuffer = null;
+//        IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
             vboList = new ArrayList<>();
@@ -27,8 +27,8 @@ public class Mesh {
             // Position VBO
             int vbo = glGenBuffers();
             vboList.add(vbo);
-            vertBuffer = MemoryUtil.memAllocFloat(positions.length);
-            vertBuffer.put(positions);
+            vertBuffer = MemoryUtil.memAllocFloat(vertices.length);
+            vertBuffer.put(vertices);
             vertBuffer.flip();
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, vertBuffer, GL_STATIC_DRAW);
@@ -42,7 +42,7 @@ public class Mesh {
             normsBuffer.flip();
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, normsBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(1, 3, GL_FLOAT, true, 0, 0);
 
             // Colors VBO
             vbo = glGenBuffers();
@@ -52,24 +52,24 @@ public class Mesh {
             colorBuffer.flip();
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(2, 4, GL_FLOAT, true, 0, 0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             // Index VBO
-            vbo = glGenBuffers();
-            vboList.add(vbo);
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices);
-            indicesBuffer.flip();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+//            vbo = glGenBuffers();
+//            vboList.add(vbo);
+//            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
+//            indicesBuffer.put(indices);
+//            indicesBuffer.flip();
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
+//            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         } finally {
             if (vertBuffer != null) MemoryUtil.memFree(vertBuffer);
             if (normsBuffer != null) MemoryUtil.memFree(normsBuffer);
             if (colorBuffer != null) MemoryUtil.memFree(colorBuffer);
-            if (indicesBuffer != null) MemoryUtil.memFree(indicesBuffer);
+//            if (indicesBuffer != null) MemoryUtil.memFree(indicesBuffer);
         }
     }
 
@@ -79,18 +79,19 @@ public class Mesh {
     public void render() {
         // Draw the mesh
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboList.get(3));
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboList.get(3));
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
-        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+//        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
 

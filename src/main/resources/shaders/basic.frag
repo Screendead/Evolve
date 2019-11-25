@@ -1,7 +1,9 @@
 #version 410
 
-layout (location = 0) in vec3 normals;
-layout (location = 1) in vec4 colors;
+//uniform vec3 sun;
+
+in vec3 normals;
+in vec4 colors;
 
 out vec4 fragColor;
 
@@ -14,4 +16,5 @@ void main() {
 	fragColor = vec4(colors.rgb * diffuse, colors.a);
 
 //	fragColor = colors;
+//	fragColor = vec4(1, 1, 1, 1);
 }
