@@ -83,10 +83,10 @@ public class Window {
         // Make the OpenGL context current
         glfwMakeContextCurrent(handle);
 
-        int msize = 256;
+        int msize = 512;
         float mscale = 1.0f;
-        float mheight = 8.0f;
-        float mdetail = 1.0f / 16.0f;
+        float mheight = 64.0f;
+        float mdetail = 1.0f / 64.0f;
 
         renderer.init(msize, mscale, mheight, mdetail);
 

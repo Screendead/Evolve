@@ -10,9 +10,11 @@ layout (location = 2) in vec4 col;
 
 out vec3 normals;
 out vec4 colors;
+out vec3 fragPos;
 
 void main() {
-	normals = norm;
+	normals = mat3(transpose(inverse(transform))) * norm;
 	colors = col;
+	fragPos = pos;
 	gl_Position = view * camera * transform * vec4(pos, 1.0);
 }

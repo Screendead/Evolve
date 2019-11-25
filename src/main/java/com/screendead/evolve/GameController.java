@@ -9,7 +9,7 @@ class GameController {
     private final Window window;
 
     GameController() {
-        window = new Window("EVOLVE", 800, 600, true, true);
+        window = new Window("EVOLVE", 1600, 900, true, true);
     }
 
     void start() {

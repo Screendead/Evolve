@@ -46,7 +46,7 @@ class Camera {
         this.look.rotateAxis((float) Math.toRadians(vertical), right.x, right.y, right.z);
 
         vel.add(acc);
-        vel.mul(0.85f);
+        vel.mul(0.9f);
         pos.add(vel);
         acc.zero();
 
@@ -60,10 +60,14 @@ class Camera {
     }
 
     private float constrain(float f) {
-        return Math.min(Math.max(f, (float) -89.99), (float) 89.99);
+        return Math.min(Math.max(f, -89.99f), 89.99f);
     }
 
     Matrix4f getMatrix() {
         return lookMatrix;
+    }
+
+    public Vector3f getPos() {
+        return pos;
     }
 }

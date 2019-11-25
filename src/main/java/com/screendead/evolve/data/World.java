@@ -2,7 +2,7 @@ package com.screendead.evolve.data;
 
 import org.joml.Vector3f;
 
-import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
+import static org.lwjgl.stb.STBPerlin.stb_perlin_noise3;
 
 public class World {
     private final Mesh mesh;
@@ -174,11 +174,13 @@ public class World {
     }
 
     private static float noise(float x, float z) {
-        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3);
+//        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3);
+        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0);
     }
 
     private static float color(int value, float height) {
-        return noise(value * 24, height * 0.1f);
+//        return noise(value * 24, height * 0.1f);
+        return 0.5f;
     }
 
     public void render() {

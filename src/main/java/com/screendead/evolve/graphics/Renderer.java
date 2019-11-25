@@ -2,6 +2,7 @@ package com.screendead.evolve.graphics;
 
 import com.screendead.evolve.data.World;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -11,6 +12,7 @@ import static org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT;
 class Renderer {
     private Shader shader;
     private World world;
+    private Vector3f sun = new Vector3f(0.0f, -1.0f, 0.0f);
 
     /**
      * Render to the framebuffer
@@ -32,6 +34,8 @@ class Renderer {
 
         shader.bind();
             shader.setUniform("camera", camera.getMatrix());
+        shader.setUniform("viewPos", camera.getPos());
+        shader.setUniform("sunPos", sun);
             world.render();
         Shader.unbind();
     }
@@ -135,6 +139,8 @@ class Renderer {
         shader.addUniform("view");
         shader.addUniform("transform");
         shader.addUniform("camera");
+        shader.addUniform("viewPos");
+        shader.addUniform("sunPos");
 
         // Set the clear color
 //        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
