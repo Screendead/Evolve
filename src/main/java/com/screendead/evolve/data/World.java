@@ -6,7 +6,7 @@ import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class World {
     private final Mesh mesh;
-    private float worldHeight;
+    private final float worldHeight;
 
     public World(int size, float scale, float height, float detail) {
         worldHeight = height * scale;

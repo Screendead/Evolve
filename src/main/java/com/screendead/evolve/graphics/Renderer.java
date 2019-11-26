@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT;
 class Renderer {
     private Shader shader;
     private World world;
-    private Vector3f sun = new Vector3f(0.0f, -1.0f, 0.0f);
+    private final Vector3f sun = new Vector3f(0.0f, -1.0f, 0.0f);
     private Vector3f lamp;
 
     /**
@@ -188,6 +188,7 @@ class Renderer {
      * @param sy Y component of the scale
      * @param sz Z component of the scale
      */
+    @SuppressWarnings("SameParameterValue")
     void setTransform(float dx, float dy, float dz, float rx, float ry, float rz, float sx, float sy, float sz) {
         shader.bind();
         shader.setUniform("transform", new Matrix4f().translation(dx, dy, dz)
