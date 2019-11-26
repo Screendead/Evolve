@@ -13,6 +13,7 @@ class Renderer {
     private Shader shader;
     private World world;
     private Vector3f sun = new Vector3f(0.0f, -1.0f, 0.0f);
+    private Vector3f lamp;
 
     /**
      * Render to the framebuffer
@@ -36,6 +37,7 @@ class Renderer {
             shader.setUniform("camera", camera.getMatrix());
         shader.setUniform("viewPos", camera.getPos());
         shader.setUniform("sunPos", sun);
+        shader.setUniform("lampPos", lamp);
             world.render();
         Shader.unbind();
     }
@@ -60,6 +62,10 @@ class Renderer {
         // OpenGL settings
 //        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        lamp = new Vector3f(size * scale / 2.0f,
+                (scale + 0.1f) * height * 4.0f,
+                size * scale / 2.0f);
 
         world = new World(size, scale, height, detail);
 
@@ -135,12 +141,13 @@ class Renderer {
 //        });
 
         // Create texture and shader
-        shader = new Shader("basic");
+        shader = new Shader("phong");
         shader.addUniform("view");
         shader.addUniform("transform");
         shader.addUniform("camera");
         shader.addUniform("viewPos");
         shader.addUniform("sunPos");
+        shader.addUniform("lampPos");
 
         // Set the clear color
 //        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);

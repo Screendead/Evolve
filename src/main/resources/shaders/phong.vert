@@ -13,8 +13,8 @@ out vec4 colors;
 out vec3 fragPos;
 
 void main() {
-	normals = mat3(transpose(inverse(transform))) * norm;
-	colors = col;
-	fragPos = pos;
-	gl_Position = view * camera * transform * vec4(pos, 1.0);
+    fragPos = pos;
+    normals = mat3(transpose(inverse(transform))) * norm;
+    colors = col;
+    gl_Position = view * camera * transform * vec4(pos, 1.0);
 }

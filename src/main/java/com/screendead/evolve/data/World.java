@@ -2,12 +2,15 @@ package com.screendead.evolve.data;
 
 import org.joml.Vector3f;
 
-import static org.lwjgl.stb.STBPerlin.stb_perlin_noise3;
+import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class World {
     private final Mesh mesh;
+    private float worldHeight;
 
     public World(int size, float scale, float height, float detail) {
+        worldHeight = height * scale;
+
         float[] v, n, c;
         int[] i;
 
@@ -133,34 +136,42 @@ public class World {
                 int cindex = (x + size * z) * 24;
                 int vindex = (x + size * z) * 18;
 
-                c[cindex] = color(0, n[vindex]);
-                c[cindex +  1] = color(1, n[vindex +  1]);
-                c[cindex +  2] = color(2, n[vindex +  2]);
+                Vector3f color = color(new Vector3f(v[vindex], v[vindex + 1], v[vindex + 2]),
+                        new Vector3f(v[vindex + 3], v[vindex + 4], v[vindex + 5]),
+                        new Vector3f(v[vindex + 6], v[vindex + 7], v[vindex + 8]));
+
+                c[cindex] = color.x;
+                c[cindex + 1] = color.y;
+                c[cindex + 2] = color.z;
                 c[cindex +  3] = 1.0f;
 
-                c[cindex +  4] = color(0, n[vindex +  3]);
-                c[cindex +  5] = color(1, n[vindex +  4]);
-                c[cindex +  6] = color(2, n[vindex +  5]);
+                c[cindex + 4] = color.x;
+                c[cindex + 5] = color.y;
+                c[cindex + 6] = color.z;
                 c[cindex +  7] = 1.0f;
 
-                c[cindex +  8] = color(0, n[vindex +  6]);
-                c[cindex +  9] = color(1, n[vindex +  7]);
-                c[cindex + 10] = color(2, n[vindex +  8]);
+                c[cindex + 8] = color.x;
+                c[cindex + 9] = color.y;
+                c[cindex + 10] = color.z;
                 c[cindex + 11] = 1.0f;
 
-                c[cindex + 12] = color(0, n[vindex +  9]);
-                c[cindex + 13] = color(1, n[vindex + 10]);
-                c[cindex + 14] = color(2, n[vindex + 11]);
+                color = color(new Vector3f(v[vindex + 9], v[vindex + 10], v[vindex + 11]),
+                        new Vector3f(v[vindex + 12], v[vindex + 13], v[vindex + 14]),
+                        new Vector3f(v[vindex + 15], v[vindex + 16], v[vindex + 17]));
+
+                c[cindex + 12] = color.x;
+                c[cindex + 13] = color.y;
+                c[cindex + 14] = color.z;
                 c[cindex + 15] = 1.0f;
 
-                c[cindex + 16] = color(0, n[vindex + 12]);
-                c[cindex + 17] = color(1, n[vindex + 13]);
-                c[cindex + 18] = color(2, n[vindex + 14]);
+                c[cindex + 16] = color.x;
+                c[cindex + 17] = color.y;
+                c[cindex + 18] = color.z;
                 c[cindex + 19] = 1.0f;
 
-                c[cindex + 20] = color(0, n[vindex + 15]);
-                c[cindex + 21] = color(1, n[vindex + 16]);
-                c[cindex + 22] = color(2, n[vindex + 17]);
+                c[cindex + 20] = color.x;
+                c[cindex + 21] = color.y;
+                c[cindex + 22] = color.z;
                 c[cindex + 23] = 1.0f;
             }
         }
@@ -174,13 +185,20 @@ public class World {
     }
 
     private static float noise(float x, float z) {
-//        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3);
-        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0);
+        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3) / 2.0f + 0.5f;
+//        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0) / 2.0f + 0.5f;
     }
 
-    private static float color(int value, float height) {
-//        return noise(value * 24, height * 0.1f);
-        return 0.5f;
+    private Vector3f color(Vector3f p1, Vector3f p2, Vector3f p3) {
+        Vector3f height = p1.add(p2).add(p3).div(3);
+
+        if (height.y < worldHeight * 0.65f) {
+            return new Vector3f(0.5f, 0.25f, 0.0f);
+        } else if (height.y < worldHeight * 0.85f) {
+            return new Vector3f(0.75f, 0.75f, 0.75f);
+        } else {
+            return new Vector3f(0.9f, 0.95f, 1.0f);
+        }
     }
 
     public void render() {
