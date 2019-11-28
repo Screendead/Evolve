@@ -69,78 +69,7 @@ class Renderer {
 
         world = new World(size, scale, height, detail);
 
-//        {
-//            float[] v, n, c;
-//            int  [] i;
-//
-////            v = new float[3 * size * size];
-//            v = new float[3 * size * size];
-//            n = new float[3 * size * size];
-//            c = new float[4 * size * size];
-//            i = new int  [6 * size * size];
-//
-//            // Vertices
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    v[(z * size + x) * 3 + 0] = x * scale;
-//                    v[(z * size + x) * 3 + 1] = STBPerlin.stb_perlin_noise3(x * detail, 0.0f, z * detail, 0, 0, 0) * height * scale;
-//                    v[(z * size + x) * 3 + 2] = z * scale;
-//
-//                    n[(z * size + x) * 3 + 0] = 0.0f;
-//                    n[(z * size + x) * 3 + 1] = 1.0f;
-//                    n[(z * size + x) * 3 + 2] = 0.0f;
-//                }
-//            }
-//
-//            // Colors
-//            for (int z = 0; z < size; z++) {
-//                for (int x = 0; x < size; x++) {
-//                    c[(z * size + x) * 4 + 0] = 1.0f;
-//                    c[(z * size + x) * 4 + 1] = 1.0f;
-//                    c[(z * size + x) * 4 + 2] = 1.0f;
-//                    c[(z * size + x) * 4 + 3] = 1.0f;
-//                }
-//            }
-//
-//            // Indices
-//            for (int z = 0; z < size - 1; z++) {
-//                for (int x = 0; x < size - 1; x++) {
-//                    int index = (z * size + x) * 6;
-//
-//                    i[index + 0] = z * size + x;
-//                    i[index + 1] = (z + 1) * size + x;
-//                    i[index + 2] = z * size + x + 1;
-//
-//                    i[index + 3] = z * size + x + 1;
-//                    i[index + 4] = (z + 1) * size + x;
-//                    i[index + 5] = (z + 1) * size + x + 1;
-//
-//                }
-//            }
-//
-//            world = new Mesh(v, n, c, i);
-//        }
-
-//        world = new Mesh(new float[] {
-//                0.0f, 0.0f, 0.0f,
-//                1.0f, 0.0f, 0.0f,
-//                0.0f, 0.0f, 1.0f,
-//                1.0f, 0.0f, 1.0f,
-//        }, new float[] {
-//                0.0f, 1.0f, 0.0f,
-//                0.0f, 1.0f, 0.0f,
-//                0.0f, 1.0f, 0.0f,
-//                0.0f, 1.0f, 0.0f,
-//        }, new float[] {
-//                0.0f, 0.0f, 0.0f, 1.0f,
-//                0.0f, 0.0f, 0.0f, 1.0f,
-//                0.0f, 0.0f, 0.0f, 1.0f,
-//                0.0f, 0.0f, 0.0f, 1.0f,
-//        }, new int[] {
-//                0, 1, 2, 2, 1, 3,
-//        });
-
-        // Create texture and shader
+        // Create shader
         shader = new Shader("phong");
         shader.addUniform("view");
         shader.addUniform("transform");
@@ -150,7 +79,6 @@ class Renderer {
         shader.addUniform("lampPos");
 
         // Set the clear color
-//        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 

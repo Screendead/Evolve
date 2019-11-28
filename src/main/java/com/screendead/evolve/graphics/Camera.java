@@ -14,11 +14,7 @@ class Camera {
     private float vertical = 0;
     private Matrix4f lookMatrix;
 
-    Camera(Vector3f pos) {
-        this(pos, new Vector3f(0, 0, 1));
-    }
-
-    private Camera(Vector3f pos, Vector3f look) {
+    Camera(Vector3f pos, Vector3f look) {
         this.pos = pos;
         this.vel = new Vector3f();
         this.acc = new Vector3f();
@@ -67,7 +63,7 @@ class Camera {
         return lookMatrix;
     }
 
-    public Vector3f getPos() {
+    Vector3f getPos() {
         return pos;
     }
 }

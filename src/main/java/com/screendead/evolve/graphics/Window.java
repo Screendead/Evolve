@@ -84,13 +84,14 @@ public class Window {
         glfwMakeContextCurrent(handle);
 
         int msize = 64;
-        float mscale = 4.0f;
+        float mscale = 1.0f / 1.0f;
         float mheight = 8.0f;
-        float mdetail = 1.0f / 8.0f;
+        float mdetail = 0.05f;
 
         renderer.init(msize, mscale, mheight, mdetail);
 
-        camera = new Camera(new Vector3f(msize * mscale / 2.0f, mscale * mheight * 2, msize * mscale / 2.0f));
+        camera = new Camera(new Vector3f(msize * mscale / 2.0f, mscale * mheight, msize * mscale / 2.0f),
+                new Vector3f(0.0f, 0.0f, 1.0f));
 
         this.autoViewport();
 
