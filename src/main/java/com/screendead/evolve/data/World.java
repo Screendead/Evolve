@@ -185,7 +185,7 @@ public class World {
     }
 
     private static float noise(float x, float z) {
-        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 3) / 2.0f + 0.5f;
+        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 2) / 2.0f + 0.5f;
 //        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0) / 2.0f + 0.5f;
     }
 
@@ -199,6 +199,8 @@ public class World {
         } else {
             return new Vector3f(0.9f, 0.95f, 1.0f);
         }
+
+//        return new Vector3f(0.2f, 0.4f, 1.0f);
     }
 
     public void render() {

@@ -86,7 +86,7 @@ public class Window {
         int msize = 64;
         float mscale = 1.0f / 1.0f;
         float mheight = 8.0f;
-        float mdetail = 0.05f;
+        float mdetail = 0.1f;
 
         renderer.init(msize, mscale, mheight, mdetail);
 

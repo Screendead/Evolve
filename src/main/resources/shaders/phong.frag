@@ -19,8 +19,7 @@ void main() {
     vec3 lightDir = normalize(lampPos - fragPos);
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, normals);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-    float specular = specularStrength * spec;
+    float specular = pow(max(dot(viewDir, reflectDir), 0.0), 64) * specularStrength;
 
-    fragColor = vec4((diffuse + specular) * colors.rgb, colors.a);
+    fragColor = vec4((diffuse + specular * vec3(1, 0.9, 0.8)) * colors.rgb, colors.a);
 }
