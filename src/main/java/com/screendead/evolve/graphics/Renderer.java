@@ -64,7 +64,7 @@ class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         lamp = new Vector3f(size * scale / 2.0f,
-                (scale + 0.1f) * height * 4.0f,
+                size * scale / 2.0f,
                 size * scale / 2.0f);
 
         world = new World(size, scale, height, detail);

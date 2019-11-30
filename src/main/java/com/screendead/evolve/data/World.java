@@ -5,11 +5,14 @@ import org.joml.Vector3f;
 import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class World {
+    private static float waterHeight = 0.65f;
     private final Mesh mesh;
-    private final float worldHeight;
+    private final float worldHeight, worldScale;
 
     public World(int size, float scale, float height, float detail) {
+        height = size * height;
         worldHeight = height * scale;
+        worldScale = scale;
 
         float[] v, n, c;
         int[] i;
@@ -29,17 +32,17 @@ public class World {
                 {
                     // Vertex 1
                     v[index    ] = x       * scale;
-                    v[index + 1] = noise(x * detail, z * detail) * height * scale;
+                    v[index + 1] = terrainHeight(x * detail, z * detail) * height * scale;
                     v[index + 2] = z       * scale;
 
                     // Vertex 2
                     v[index + 3] = x       * scale;
-                    v[index + 4] = noise(x * detail, (z + 1) * detail) * height * scale;
+                    v[index + 4] = terrainHeight(x * detail, (z + 1) * detail) * height * scale;
                     v[index + 5] = (z + 1) * scale;
 
                     // Vertex 3
                     v[index + 6] = (x + 1) * scale;
-                    v[index + 7] = noise((x + 1) * detail, z * detail) * height * scale;
+                    v[index + 7] = terrainHeight((x + 1) * detail, z * detail) * height * scale;
                     v[index + 8] = z       * scale;
                 }
 
@@ -47,17 +50,17 @@ public class World {
                 {
                     // Vertex 3
                     v[index +  9] = (x + 1) * scale;
-                    v[index + 10] = noise((x + 1) * detail, z * detail) * height * scale;
+                    v[index + 10] = terrainHeight((x + 1) * detail, z * detail) * height * scale;
                     v[index + 11] = z       * scale;
 
                     // Vertex 2
                     v[index + 12] = x       * scale;
-                    v[index + 13] = noise(x * detail, (z + 1) * detail) * height * scale;
+                    v[index + 13] = terrainHeight(x * detail, (z + 1) * detail) * height * scale;
                     v[index + 14] = (z + 1) * scale;
 
                     // Vertex 4
                     v[index + 15] = (x + 1) * scale;
-                    v[index + 16] = noise((x + 1) * detail, (z + 1) * detail) * height * scale;
+                    v[index + 16] = terrainHeight((x + 1) * detail, (z + 1) * detail) * height * scale;
                     v[index + 17] = (z + 1) * scale;
                 }
 
@@ -184,18 +187,28 @@ public class World {
         this.mesh = new Mesh(v, n, c, i);
     }
 
-    private static float noise(float x, float z) {
-        return stb_perlin_turbulence_noise3(x, 0.0f, z, 2.0f, 0.5f, 2) / 2.0f + 0.5f;
+    private static float terrainHeight(float x, float z) {
+        return Math.max(noise(x, 0.0f, z), waterHeight);
+    }
+
+    private static float noise(float x, float y, float z) {
+        return stb_perlin_turbulence_noise3(x, 0.0f, z, 1.93f, 0.6f, 7) / 2.0f + 0.5f;
 //        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0) / 2.0f + 0.5f;
     }
 
     private Vector3f color(Vector3f p1, Vector3f p2, Vector3f p3) {
-        Vector3f height = p1.add(p2).add(p3).div(3);
+        Vector3f average = p1.add(p2).add(p3).div(3);
+        Vector3f noiseInputs = new Vector3f(average).div(worldHeight);
+        int ratiox = 1, ratioy = 2;
+        float height = (ratiox * noise(noiseInputs.x, noiseInputs.y, noiseInputs.z) + ratioy * (average.y / worldHeight)) / (ratiox + ratioy);
 
-        if (height.y < worldHeight * 0.65f) {
-            return new Vector3f(0.5f, 0.25f, 0.0f);
-        } else if (height.y < worldHeight * 0.85f) {
-            return new Vector3f(0.75f, 0.75f, 0.75f);
+        if (noiseInputs.y <= waterHeight) {
+            return new Vector3f(0.1f, 0.4f, 1.0f);
+        } else if (height < 0.75f) {
+//            return new Vector3f(0.5f, 0.25f, 0.0f);
+            return new Vector3f(0.0f, 0.5f, 0.0f);
+        } else if (height < 0.85f) {
+            return new Vector3f(0.7f, 0.65f, 0.65f);
         } else {
             return new Vector3f(0.9f, 0.95f, 1.0f);
         }
