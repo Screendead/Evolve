@@ -5,14 +5,13 @@ import org.joml.Vector3f;
 import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class World {
-    private static float waterHeight = 0.65f;
+    private static final float waterHeight = 0.65f;
     private final Mesh mesh;
-    private final float worldHeight, worldScale;
+    private final float worldHeight;
 
     public World(int size, float scale, float height, float detail) {
         height = size * height;
         worldHeight = height * scale;
-        worldScale = scale;
 
         float[] v, n, c;
         int[] i;
@@ -192,7 +191,7 @@ public class World {
     }
 
     private static float noise(float x, float y, float z) {
-        return stb_perlin_turbulence_noise3(x, 0.0f, z, 1.93f, 0.6f, 7) / 2.0f + 0.5f;
+        return stb_perlin_turbulence_noise3(x, y, z, 1.93f, 0.6f, 7) / 2.0f + 0.5f;
 //        return stb_perlin_noise3(x, 0.0f, z, 0, 0, 0) / 2.0f + 0.5f;
     }
 
