@@ -10,7 +10,7 @@ in vec3 fragPos;
 
 out vec4 fragColor;
 
-const float ambient = 0.1;
+const float ambient = 0.0;
 const float specularStrength = 2.0;
 
 void main() {
@@ -24,5 +24,5 @@ void main() {
     if (colors.rgb == vec3(0.1, 0.4, 1.0)) specular = pow(max(dot(viewDir, reflectDir), 0.0), 256) * specularStrength;
     else specular = pow(max(dot(viewDir, reflectDir), 0.0), 4) * specularStrength * 0.25;
 
-    fragColor = vec4((diffuse + specular * vec3(1, 0.7, 0.6)) * colors.rgb, colors.a);
+    fragColor = vec4((diffuse + specular * vec3(1, 0.9, 0.9)) * colors.rgb, colors.a);
 }

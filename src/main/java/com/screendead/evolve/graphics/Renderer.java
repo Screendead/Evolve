@@ -55,12 +55,12 @@ class Renderer {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEBUG_OUTPUT);
-//        glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glEnable(GL_MULTISAMPLE);
 
         // OpenGL settings
-//        glCullFace(GL_BACK);
+        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         lamp = new Vector3f(size * scale / 2.0f,
