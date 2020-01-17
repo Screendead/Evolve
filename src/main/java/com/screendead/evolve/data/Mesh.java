@@ -3,6 +3,7 @@ package com.screendead.evolve.data;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -13,7 +14,7 @@ class Mesh {
 
     Mesh(float[] vertices, float[] normals, float[] colors, int[] indices) {
         FloatBuffer vertBuffer = null, normsBuffer = null, colorBuffer = null;
-//        IntBuffer indicesBuffer = null;
+        IntBuffer indicesBuffer = null;
         try {
             vertexCount = indices.length;
             vboList = new ArrayList<>();
@@ -53,20 +54,20 @@ class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             // Index VBO
-//            vbo = glGenBuffers();
-//            vboList.add(vbo);
-//            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-//            indicesBuffer.put(indices);
-//            indicesBuffer.flip();
-//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
-//            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            vbo = glGenBuffers();
+            vboList.add(vbo);
+            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
+            indicesBuffer.put(indices);
+            indicesBuffer.flip();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         } finally {
             if (vertBuffer != null) MemoryUtil.memFree(vertBuffer);
             if (normsBuffer != null) MemoryUtil.memFree(normsBuffer);
             if (colorBuffer != null) MemoryUtil.memFree(colorBuffer);
-//            if (indicesBuffer != null) MemoryUtil.memFree(indicesBuffer);
+            if (indicesBuffer != null) MemoryUtil.memFree(indicesBuffer);
         }
     }
 
@@ -76,19 +77,18 @@ class Mesh {
     void render() {
         // Draw the mesh
         glBindVertexArray(vao);
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboList.get(3));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboList.get(3));
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
-//        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
 

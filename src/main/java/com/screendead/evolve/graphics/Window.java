@@ -58,7 +58,7 @@ public class Window {
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_SAMPLES, 16); // Enable MSAA
+//        glfwWindowHint(GLFW_SAMPLES, 16); // Enable MSAA
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // The window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // The window will be resizable
         glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE); // The window will be alt-tabbable without iconifying
@@ -83,15 +83,10 @@ public class Window {
         // Make the OpenGL context current
         glfwMakeContextCurrent(handle);
 
-//        int msize = 64;
-//        float mscale = 1.0f / 1.0f;
-//        float mheight = 8.0f;
-//        float mdetail = 0.1f;
-
-        int msize = 256;
-        float mscale = 1.0f / 1.0f;
-        float mheight = 0.1f;
-        float mdetail = 0.01f;
+        int msize = (int) Math.pow(2, 6);
+        float mscale = (float) Math.pow(2, -3);
+        float mheight = (float) Math.pow(2, -4);
+        float mdetail = (float) Math.pow(2, -9);
 
         renderer.init(msize, mscale, mheight, mdetail);
 
