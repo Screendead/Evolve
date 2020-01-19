@@ -2,35 +2,29 @@ package com.screendead.evolve.data;
 
 import org.joml.Vector3f;
 
+import java.awt.*;
+
 import static org.lwjgl.stb.STBPerlin.stb_perlin_turbulence_noise3;
 
 public class Chunk {
-    private static final int SIZE = 16;
-    private final int x, z;
+    private static final int SIZE = 16, HEIGHT = 256;
+    private final int cx, cz;
     private final float height, worldHeight, scale, detail;
     private float[][] noise;
     private Mesh mesh;
 
     public Chunk(int x, int z, float scale, float height, float detail) {
-        this.x = x;
-        this.z = z;
+        this.cx = x;
+        this.cz = z;
 
-        this.height = SIZE * height;
+        this.height = HEIGHT * height;
         this.worldHeight = height * scale;
         this.scale = scale;
         this.detail = detail;
 
-        initNoise(SIZE, scale, height, detail);
+        initNoise();
 
         generate();
-    }
-
-    private static float terrainHeight(float x, float z) {
-        return Math.max(noise(x, 0.0f, z), 0.65f);
-    }
-
-    private static float noise(float x, float y, float z) {
-        return stb_perlin_turbulence_noise3(x, y, z, 3.5f, 0.5f, 5) / 2.0f + 0.5f;
     }
 
     private void generate() {
@@ -43,24 +37,26 @@ public class Chunk {
         i = new int[6 * SIZE * SIZE]; // 6 points
 
         // Vertices
-        for (int z = 0; z < SIZE - 1; z++) {
-            for (int x = 0; x < SIZE - 1; x++) {
-                int index = (x + SIZE * z) * 18;
+        for (int b = 0; b < SIZE; b++) {
+            for (int a = 0; a < SIZE; a++) {
+                int index = (a + SIZE * b) * 18;
+                int x = this.cx * SIZE + b;
+                int z = this.cz * SIZE + a;
 
                 // Triangle 1
                 {
                     // Vertex 1
-                    v[index] = x * scale;
-                    v[index + 1] = noise[z][x];
+                    v[index]     = x * scale;
+                    v[index + 1] = noise[a][b];
                     v[index + 2] = z * scale;
                     // Vertex 2
                     v[index + 3] = x * scale;
-                    v[index + 4] = noise[z + 1][x];
+                    v[index + 4] = noise[a + 1][b];
                     v[index + 5] = (z + 1) * scale;
 
                     // Vertex 3
                     v[index + 6] = (x + 1) * scale;
-                    v[index + 7] = noise[z][x + 1];
+                    v[index + 7] = noise[a][b + 1];
                     v[index + 8] = z * scale;
                 }
 
@@ -68,17 +64,17 @@ public class Chunk {
                 {
                     // Vertex 3
                     v[index + 9] = (x + 1) * scale;
-                    v[index + 10] = noise[z][x + 1];
+                    v[index + 10] = noise[a][b + 1];
                     v[index + 11] = z * scale;
 
                     // Vertex 2
                     v[index + 12] = x * scale;
-                    v[index + 13] = noise[z + 1][x];
+                    v[index + 13] = noise[a + 1][b];
                     v[index + 14] = (z + 1) * scale;
 
                     // Vertex 4
                     v[index + 15] = (x + 1) * scale;
-                    v[index + 16] = noise[z + 1][x + 1];
+                    v[index + 16] = noise[a + 1][b + 1];
                     v[index + 17] = (z + 1) * scale;
                 }
             }
@@ -173,36 +169,31 @@ public class Chunk {
         this.mesh = new Mesh(v, n, c, i);
     }
 
-    private void initNoise(int SIZE, float scale, float height, float detail) {
-        noise = new float[SIZE][SIZE];
+    private static float terrainHeight(float x, float z) {
+        return Math.max(noise(x, 0.0f, z), 0.65f);
+//        return (float) Math.pow(noise(x, noise(z, x, 0.0f), z) / noise(0.0f, z, x), noise(x, x, z)) / noise(z, z, x);
+    }
 
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                noise[j][i] = terrainHeight((this.x * SIZE + j) * detail, (this.z * SIZE + i) * detail) * height * scale;
+    private static float noise(float x, float y, float z) {
+        return stb_perlin_turbulence_noise3(x, y, z, 3.5f, 0.5f, 2) / 2.0f + 0.5f;
+    }
+
+    private void initNoise() {
+        noise = new float[SIZE + 1][SIZE + 1];
+
+        for (int i = 0; i < SIZE + 1; i++) {
+            for (int j = 0; j < SIZE + 1; j++) {
+                noise[j][i] = terrainHeight((this.cx * SIZE + i) * detail, (this.cz * SIZE + j) * detail) * height * scale;
             }
         }
     }
 
     private Vector3f color(Vector3f p1, Vector3f p2, Vector3f p3) {
-        Vector3f average = p1.add(p2).add(p3).div(3);
-        Vector3f noiseInputs = new Vector3f(average).div(worldHeight);
-        int ratiox = 1, ratioy = 2;
-        float height = (ratiox * noise(noiseInputs.x, noiseInputs.y, noiseInputs.z) + ratioy * (average.y / worldHeight)) / (ratiox + ratioy);
+        float hue = (p1.y + p2.y + p3.y) / 3.0f;
 
-        if (noiseInputs.y <= 0.65f) {
-            return new Vector3f(0.1f, 0.4f, 1.0f);
-        } else if (height < 0.675f) {
-            return new Vector3f(0.75f, 0.75f, 0.0f);
-        } else if (height < 0.75f) {
-//            return new Vector3f(0.5f, 0.25f, 0.0f);
-            return new Vector3f(0.0f, 0.5f, 0.0f);
-        } else if (height < 0.85f) {
-            return new Vector3f(0.7f, 0.65f, 0.65f);
-        } else {
-            return new Vector3f(0.9f, 0.95f, 1.0f);
-        }
+        Color c = Color.getHSBColor(hue / 16.0f, 1.0f, 0.75f);
 
-//        return new Vector3f(0.2f, 0.4f, 1.0f);
+        return new Vector3f(c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f);
     }
 
     public void render() {

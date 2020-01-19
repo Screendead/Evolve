@@ -10,7 +10,14 @@ public class World {
     private ArrayList<Chunk> chunks = new ArrayList<>();
 
     public World(int size, float scale, float height, float detail) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int x = (int) (j - size / 2.0f);
+                int z = (int) (i - size / 2.0f);
 
+                chunks.add(new Chunk(x, z, scale, height, detail));
+            }
+        }
     }
 
     public void render() {
