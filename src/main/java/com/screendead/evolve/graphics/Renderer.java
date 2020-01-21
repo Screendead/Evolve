@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT;
 class Renderer {
     private Shader shader;
     private World world;
-    private final Vector3f sun = new Vector3f(0.0f, -1.0f, 0.0f);
+    private Vector3f sunDir = new Vector3f(0.0f, -1.0f, 0.0f);
     private Vector3f lamp;
 
     /**
@@ -36,7 +36,7 @@ class Renderer {
         shader.bind();
             shader.setUniform("camera", camera.getMatrix());
             shader.setUniform("viewPos", camera.getPos());
-            shader.setUniform("sunPos", sun);
+            shader.setUniform("sunDir", sunDir);
             shader.setUniform("lampPos", lamp);
             world.render();
         Shader.unbind();
@@ -55,16 +55,16 @@ class Renderer {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEBUG_OUTPUT);
-//        glEnable(GL_CULL_FACE);
+        glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glEnable(GL_MULTISAMPLE);
 
         // OpenGL settings
-//        glCullFace(GL_BACK);
+        glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         lamp = new Vector3f(size * scale / 2.0f,
-                size * scale / 2.0f,
+                size * scale * height * 16.0f,
                 size * scale / 2.0f);
 
         world = new World(size, scale, height, detail);
@@ -75,7 +75,7 @@ class Renderer {
         shader.addUniform("transform");
         shader.addUniform("camera");
         shader.addUniform("viewPos");
-        shader.addUniform("sunPos");
+        shader.addUniform("sunDir");
         shader.addUniform("lampPos");
 
         // Set the clear color

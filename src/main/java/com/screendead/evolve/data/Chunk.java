@@ -171,21 +171,24 @@ public class Chunk {
 
     private static float terrainHeight(float x, float z) {
         return Math.max(noise(x, 0.0f, z), 0.65f);
-//        return (float) Math.pow(noise(x, noise(z, x, 0.0f), z) / noise(0.0f, z, x), noise(x, x, z)) / noise(z, z, x);
+//        return noise(noise(x, z, x), noise(z, x, 0.0f) * noise(x, 0.0f, z), noise(z, z, x)) * noise(noise(z, z, x), noise(x, 0.0f, z) * noise(z, x, 0.0f) * noise(0.0f, -z, x), noise(z, x, x));
     }
 
     private static float noise(float x, float y, float z) {
-        return stb_perlin_turbulence_noise3(x, y, z, 3.5f, 0.5f, 2) / 2.0f + 0.5f;
+        return stb_perlin_turbulence_noise3(x, y, z, 1.5f, 0.5f, 10) / 2.0f + 0.5f;
     }
 
     private void initNoise() {
         noise = new float[SIZE + 1][SIZE + 1];
 
+        long timer = System.nanoTime();
         for (int i = 0; i < SIZE + 1; i++) {
             for (int j = 0; j < SIZE + 1; j++) {
                 noise[j][i] = terrainHeight((this.cx * SIZE + i) * detail, (this.cz * SIZE + j) * detail) * height * scale;
             }
         }
+        timer = System.nanoTime() - timer;
+        System.out.println(timer);
     }
 
     private Vector3f color(Vector3f p1, Vector3f p2, Vector3f p3) {
@@ -193,7 +196,7 @@ public class Chunk {
 
         Color c = Color.getHSBColor(hue / 16.0f, 1.0f, 0.75f);
 
-        return new Vector3f(c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f);
+        return new Vector3f(1.0f - (c.getBlue() / 255.0f), 0.0f, c.getBlue() / 255.0f);
     }
 
     public void render() {
