@@ -1,4 +1,4 @@
-#version 410
+#version 420
 
 uniform vec3 viewPos;
 uniform vec3 sunPos;

@@ -35,9 +35,9 @@ class Renderer {
 
         shader.bind();
             shader.setUniform("camera", camera.getMatrix());
-        shader.setUniform("viewPos", camera.getPos());
-        shader.setUniform("sunPos", sun);
-        shader.setUniform("lampPos", lamp);
+            shader.setUniform("viewPos", camera.getPos());
+            shader.setUniform("sunPos", sun);
+            shader.setUniform("lampPos", lamp);
             world.render();
         Shader.unbind();
     }

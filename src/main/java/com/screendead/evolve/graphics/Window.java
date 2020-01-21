@@ -68,7 +68,7 @@ public class Window {
         if (handle == NULL)
             throw new RuntimeException("Failed to create the GLFW window.");
 
-        glfwSetInputMode(this.handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // The cursor will be hidden
+//        glfwSetInputMode(this.handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // The cursor will be hidden
 
         // Set the icon of the window
         setIcon("icon.jpg");
